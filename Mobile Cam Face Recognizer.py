@@ -1,9 +1,8 @@
-# After creating the dataset of at least 1 person using create_dataset.py 
-# now it is time to predict person by reading real time frames
+import urllib.request
+import cv2
+import numpy as np
+import os
 
-import cv2, numpy, os
-
-size = 1
 haar_file = 'haarcascade_frontalface_default.xml'
 face_cascade = cv2.CascadeClassifier(haar_file)
 dataset = 'dataset'
@@ -22,7 +21,7 @@ for (subdirs, dirs, files) in os.walk(dataset):
             labels.append(int(label))
         id +=1
         
-(images, labels) = [numpy.array(lis) for lis in [images, labels]]
+(images, labels) = [np.array(lis) for lis in [images, labels]]
 print((images, labels))
 (width, height) = (130, 100)
 
@@ -31,11 +30,19 @@ model = cv2.face.LBPHFaceRecognizer_create()
 
 model.train(images, labels)
 
-cam = cv2.VideoCapture(0)
 cnt = 0
 
+# download IP Webcam App in mobile and paste here the url given in the app 
+url='http://192.168.1.6:8080/shot.jpg'
+
 while True:
-    (_, img) = cam.read()
+    # we are reading frames from mobile cam
+    imgPath = urllib.request.urlopen(url)
+    imgNp = np.array(bytearray(imgPath.read()), dtype=np.uint8)
+    img = cv2.imdecode(imgNp, -1)
+    img =  cv2.resize(img, None, fx= 1, fy= 1)
+    cv2.imshow("CameraFeed",img)
+
     grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces= face_cascade.detectMultiScale(grayImg, 1.3, 5)
     for (x,y,w,h) in faces:
@@ -64,5 +71,4 @@ while True:
     if key == 27:
         break
 
-cam.release()
 cv2.destroyAllWindows()
