@@ -1,9 +1,8 @@
-# After creating the dataset of at least 1 person using create_dataset.py 
+# After creating the dataset of at least 2 persons using create_dataset.py 
 # now it is time to predict person by reading real time frames
 
 import cv2, numpy, os
 
-size = 1
 haar_file = 'haarcascade_frontalface_default.xml'
 face_cascade = cv2.CascadeClassifier(haar_file)
 dataset = 'dataset'
@@ -18,6 +17,7 @@ for (subdirs, dirs, files) in os.walk(dataset):
         for filename in os.listdir(subjectpath):
             path = subjectpath + '/' + filename
             label = id
+            print(label)
             images.append(cv2.imread(path, 0))
             labels.append(int(label))
         id +=1
@@ -26,8 +26,8 @@ for (subdirs, dirs, files) in os.walk(dataset):
 print((images, labels))
 (width, height) = (130, 100)
 
-model = cv2.face.LBPHFaceRecognizer_create()
-#model = cv2.face.FisherFaceRecognizer_create()
+#model = cv2.face.LBPHFaceRecognizer_create()
+model = cv2.face.FisherFaceRecognizer_create()
 
 model.train(images, labels)
 

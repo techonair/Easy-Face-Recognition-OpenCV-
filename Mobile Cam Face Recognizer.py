@@ -33,15 +33,15 @@ model.train(images, labels)
 cnt = 0
 
 # download IP Webcam App in mobile and paste here the url given in the app 
-url='http://192.168.1.6:8080/shot.jpg'
+url='http://192.168.43.1:8080/shot.jpg'
 
 while True:
     # we are reading frames from mobile cam
     imgPath = urllib.request.urlopen(url)
     imgNp = np.array(bytearray(imgPath.read()), dtype=np.uint8)
     img = cv2.imdecode(imgNp, -1)
-    img =  cv2.resize(img, None, fx= 1, fy= 1)
-    cv2.imshow("CameraFeed",img)
+    img =  cv2.resize(img, None, fx= 0.4, fy= 0.4)
+    #cv2.imshow("CameraFeed",img)
 
     grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces= face_cascade.detectMultiScale(grayImg, 1.3, 5)
